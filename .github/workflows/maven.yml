@@ -37,10 +37,8 @@ jobs:
       working-directory: CloudAssignment03
     - name: MAven clean
       run:  mvn clean install
-    - name: MAVEN BUILD
-      run: mvn package
-    - name: MAven deploy
-      run: mvn deploy
+    - name: MAVEN TEST
+      run: mvn test
 
     # - name: Test with Maven
     #   run: mvn --batch-mode --update-snapshots verify
