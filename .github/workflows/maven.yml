@@ -28,9 +28,9 @@ jobs:
           postgresql user: 'myuser'
           postgresql password: 'mypassword'
       - name: Build with Maven
-        working-directory: Assignment03
+        working-directory: CloudAssignment03
         run: mvn clean install
       - name: Running test cases
-        working-directory: Assignment033
+        working-directory: CloudAssignment03
         run: mvn test -Dtest=”CloudAssignment03ApplicationTests”
 
