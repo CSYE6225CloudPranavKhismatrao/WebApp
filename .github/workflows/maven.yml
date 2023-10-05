@@ -1,46 +1,36 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle
+name: Main Branch PR Workflow
 
 on:
   pull_request_target:
-    types: [ assigned, opened, synchronize, reopened ]
-
-permissions:
-  contents: read
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
-  integration-test:
+  build:
+    name: Java-Build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '19'
-        distribution: 'temurin'
-    - name: Connect to PostgreSQL
-      uses: harmon758/postgresql-action@v1
-      with:
-        postgresql db: 'postgres'
-        postgresql user: 'myuser'
-        postgresql password: 'mypassword'
-    - name: checks
-      run: java -version && pwd && ls -al
-    - name: Maven run
-      working-directory: CloudAssignment03
-    - name: MAven clean
-      run:  mvn clean install
-    - name: MAVEN TEST
-      run: mvn test
+      - uses: actions/checkout@v3
+      - name: Set up JDK 19
+        uses: actions/setup-java@v3
+        with:
+          java-version: '19'
+          distribution: 'temurin'
+          cache: maven
+      - name: Connect to PostgreSQL
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: 'postgres'
+          postgresql user: 'myuser'
+          postgresql password: 'mypassword'
+      - name: Build with Maven
+        working-directory: Assignment03
+        run: mvn clean install
+      - name: Running test cases
+        working-directory: Assignment033
+        run: mvn test -Dtest=”CloudAssignment03ApplicationTests”
 
-    # - name: Test with Maven
-    #   run: mvn --batch-mode --update-snapshots verify
-      env:
-        ACTIONS_RUNNER_DEBUG: ${{ secrets.ACTIONS_RUNNER_DEBUG }}
