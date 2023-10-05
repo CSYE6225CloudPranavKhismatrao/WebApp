@@ -1,4 +1,4 @@
-]name: Octo Organization CI
+name: Octo Organization CI
 
 on:
   push:
