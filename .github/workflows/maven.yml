@@ -32,5 +32,5 @@ jobs:
         run: mvn clean install
       - name: Running test cases
         working-directory: CloudAssignment03
-        run: mvn test -Dtest=”HealthCheckIntegrationTest”
+        run: mvn test -Dtest="HealthCheckIntegrationTest"
 
