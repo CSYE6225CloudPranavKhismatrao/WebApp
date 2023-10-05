@@ -7,6 +7,7 @@ import com.example.cloudassignment03.services.ValidationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +45,7 @@ public class AssignmentController {
     }
 
     @PostMapping("/v1/assignments")
-    public ResponseEntity<String> createAssignment(@RequestBody(required = true) String requestStr){
+    public ResponseEntity<String> createAssignment(@RequestBody String requestStr){
         try {
             JsonNode requestJson = validationService.validateJSON(requestStr, SCHEMA_PATH);
             log.info("Validated JSON String");
@@ -57,6 +58,10 @@ public class AssignmentController {
             return ResponseEntity.status(400).build();
         }
 
+    }
+    @PatchMapping("v1/assignments")
+    public ResponseEntity<String> patchAssignment(){
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
     }
 
     @GetMapping("/v1/assignments/{id}")
