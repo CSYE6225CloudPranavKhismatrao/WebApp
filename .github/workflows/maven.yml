@@ -40,7 +40,11 @@ jobs:
     - name: MAVEN BUILD
       run: mvn package
     - name: MAven deploy
-            mvn deploy
+      run: mvn deploy
+      run: mvn clean install
+    - name: MAVEN BUILD
+      run: mvn package
+
     # - name: Test with Maven
     #   run: mvn --batch-mode --update-snapshots verify
       env:
