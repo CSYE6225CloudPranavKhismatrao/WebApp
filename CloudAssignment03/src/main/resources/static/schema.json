@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "points": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "num_of_attempts": {
+      "type": "number"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["name", "points", "num_of_attempts", "deadline"]
+}
