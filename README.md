@@ -6,6 +6,7 @@
 - Java 19: Ensure Java Development Kit (JDK) 17 is installed.
 - Maven: This project uses the Maven build system.
 - PostgreSQL: A running instance is required for bootstrapping and integration tests.
+- test
 
 
 ## Setup & Installation
