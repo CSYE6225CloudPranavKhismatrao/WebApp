@@ -2,6 +2,7 @@ package com.example.cloudassignment03.services;
 
 import com.example.cloudassignment03.auth.BasicAuthenticationManager;
 import com.example.cloudassignment03.entity.Assignment;
+import com.example.cloudassignment03.exceptions.AssignmentNotFoundException;
 import com.example.cloudassignment03.repository.AssignmentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -55,7 +57,12 @@ public class AssignmentService implements IAssignmentService{
 
     @Override
     public Assignment getOneAssignment(UUID id){
-        return assignmentRepository.findById(id);
+        if (id == null)
+            throw new IllegalArgumentException("Invalid User");
+
+        Optional<Assignment> optionalUser = Optional.ofNullable(assignmentRepository.findById(id));
+        Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException());
+        return assignment;
     }
 
     @Override
