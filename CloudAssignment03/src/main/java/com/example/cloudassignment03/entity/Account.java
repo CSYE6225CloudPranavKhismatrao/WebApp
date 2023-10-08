@@ -2,16 +2,14 @@ package com.example.cloudassignment03.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.ColumnTransformer;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "Users")
-public class User {
+@Table(name = "Account")
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

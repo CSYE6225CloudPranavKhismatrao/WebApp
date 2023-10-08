@@ -37,7 +37,6 @@ public class AssignmentController {
     @GetMapping("/v1/assignments")
     public ResponseEntity<Object> getAll(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara){
         if (reqStr != null || reqPara !=null){
-
             return ResponseEntity.status(400).build();
         }
         List<Assignment> list = assignmentService.getAll();

@@ -1,30 +1,24 @@
 package com.example.cloudassignment03.services;
 
-import com.example.cloudassignment03.entity.User;
-import com.example.cloudassignment03.repository.UserRepository;
+import com.example.cloudassignment03.entity.Account;
+import com.example.cloudassignment03.repository.AccountRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class CsvDataLoader {
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
-    public CsvDataLoader(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CsvDataLoader(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
     @PostConstruct
@@ -41,10 +35,10 @@ public class CsvDataLoader {
                 String password = line[3];
 
                 // Check if the user already exists
-                Optional<User> existingUser = userRepository.findByEmail(email);
+                Optional<Account> existingUser = accountRepository.findByEmail(email);
 
                 if (existingUser.isEmpty()) {
-                    User newUser = new User();
+                    Account newUser = new Account();
                     newUser.setFirstName(username);
                     newUser.setLastName(lastName);
                     newUser.setEmail(email);
@@ -52,10 +46,8 @@ public class CsvDataLoader {
                     newUser.setAccountUpdated(LocalDateTime.now());
                     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     newUser.setPassword(passwordEncoder.encode(password));
-//                    newUser.setId(1L);
-//                    newUser.setPassword(password);
-                    // Set other fields if needed
-                    userRepository.save(newUser);
+
+                    accountRepository.save(newUser);
                 }
             }
         } catch (IOException e) {
