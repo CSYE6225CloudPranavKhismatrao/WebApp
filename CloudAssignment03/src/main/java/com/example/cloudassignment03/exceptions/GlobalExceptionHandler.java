@@ -16,11 +16,18 @@ public class GlobalExceptionHandler {
         return "{error: \"" + jsonFormatException.getMessage() + "\"}";
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(AssignmentNotFoundException.class)
     @ResponseBody
-    public String handlePlanNotFoundException(AssignmentNotFoundException assignmentNotFoundException){
-        return "{error: \" Assignment not found in database\"}";
+    public String handleAssignmentNotFoundException(AssignmentNotFoundException assignmentNotFoundException){
+        return "{error: \""+ assignmentNotFoundException.getMessage();
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(CannotAccessException.class)
+    @ResponseBody
+    public String handleAccessException(CannotAccessException cannotAccessException){
+        return "{error: \"" + cannotAccessException.getMessage() + "\"}";
     }
 //
 //    @ResponseStatus(HttpStatus.NOT_MODIFIED)
