@@ -20,6 +20,7 @@ public class HealthCheckIntegrationTest {
 
     @Test
     public void testHealthCheckEndpoint() {
+
         String url = "http://localhost:" + port + "/healthz";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
