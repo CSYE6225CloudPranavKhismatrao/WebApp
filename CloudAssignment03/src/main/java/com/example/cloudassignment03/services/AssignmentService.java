@@ -71,6 +71,7 @@ public class AssignmentService implements IAssignmentService{
         Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException("Assignment not found"));
         if (!assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName()))
             throw new CannotAccessException("Cannot access requested resource");
+
         return assignment;
     }
 
