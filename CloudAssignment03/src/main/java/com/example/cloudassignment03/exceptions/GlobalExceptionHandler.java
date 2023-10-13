@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AssignmentNotFoundException.class)
     @ResponseBody
     public String handleAssignmentNotFoundException(AssignmentNotFoundException assignmentNotFoundException){
-        return "{error: \""+ assignmentNotFoundException.getMessage();
+        return "{error: \""+ assignmentNotFoundException.getMessage() + "\"}";
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)

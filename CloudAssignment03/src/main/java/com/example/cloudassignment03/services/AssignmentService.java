@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class AssignmentService implements IAssignmentService{
     private final AssignmentRepository assignmentRepository;
 
@@ -82,8 +84,9 @@ public class AssignmentService implements IAssignmentService{
     @Transactional
     public boolean deleteAssignment(UUID uuid) {
         Assignment assignment = assignmentRepository.findById(uuid);
+        log.info(String.valueOf(assignment));
         if (assignment ==  null)
-            return false;
+            throw new AssignmentNotFoundException("Assignment not found");
         if (assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
             Query query = entityManager.createQuery("delete from Assignment a WHERE a.id=:id");
             query.setParameter("id", uuid);
@@ -98,6 +101,9 @@ public class AssignmentService implements IAssignmentService{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assignment assignment1 = assignmentRepository
                 .findById(id);
+        if (assignment1 == null){
+            throw new AssignmentNotFoundException("Not Found");
+        }
         if (authentication.getPrincipal().equals(assignment1.getOwnerEmail())){
             assignment1.setName(requestBody.getName());
             assignment1.setPoints(requestBody.getPoints());
