@@ -65,7 +65,10 @@ public class AssignmentService implements IAssignmentService{
             throw new IllegalArgumentException("Invalid User");
 
         Optional<Assignment> optionalUser = Optional.ofNullable(assignmentRepository.findById(id));
+
         Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException("Assignment not found"));
+        if (!assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName()))
+            throw new CannotAccessException("Cannot access requested resource");
 
         return assignment;
     }
@@ -74,6 +77,7 @@ public class AssignmentService implements IAssignmentService{
     public List<Assignment> getAll() {
         return assignmentRepository.findAll();
     }
+
     @Override
     @Transactional
     public boolean deleteAssignment(UUID uuid) {
@@ -86,7 +90,7 @@ public class AssignmentService implements IAssignmentService{
             query.executeUpdate();
             return true;
         }
-        return false;
+        throw new CannotAccessException("Cannot access the requested Data");
     }
 
     @Override
