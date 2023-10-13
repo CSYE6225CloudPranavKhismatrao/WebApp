@@ -28,6 +28,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public String handleAccessException(CannotAccessException cannotAccessException){
         return "{error: \"" + cannotAccessException.getMessage() + "\"}";
+
     }
 //
 //    @ResponseStatus(HttpStatus.NOT_MODIFIED)

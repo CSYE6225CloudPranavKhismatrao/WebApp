@@ -5,6 +5,7 @@ import com.example.cloudassignment03.entity.Account;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.exceptions.AssignmentNotFoundException;
 import com.example.cloudassignment03.exceptions.CannotAccessException;
+
 import com.example.cloudassignment03.repository.AssignmentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
@@ -65,6 +66,7 @@ public class AssignmentService implements IAssignmentService{
 
         Optional<Assignment> optionalUser = Optional.ofNullable(assignmentRepository.findById(id));
         Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException("Assignment not found"));
+
         return assignment;
     }
 
