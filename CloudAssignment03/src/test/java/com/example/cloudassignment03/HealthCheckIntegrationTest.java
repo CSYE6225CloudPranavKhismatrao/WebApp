@@ -20,7 +20,7 @@ public class HealthCheckIntegrationTest {
 
     @Test
     public void testHealthCheckEndpoint() {
-        String url = "http://localhost:" + port + "/healthz";
+        String url = "http://localhost:" + port + "/health";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
         // Assert that the response status code is 200 OK
