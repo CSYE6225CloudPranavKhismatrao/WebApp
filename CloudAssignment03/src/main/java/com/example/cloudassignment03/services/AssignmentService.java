@@ -1,8 +1,11 @@
 package com.example.cloudassignment03.services;
 
 import com.example.cloudassignment03.auth.BasicAuthenticationManager;
+import com.example.cloudassignment03.entity.Account;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.exceptions.AssignmentNotFoundException;
+import com.example.cloudassignment03.exceptions.CannotAccessException;
+
 import com.example.cloudassignment03.repository.AssignmentRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.EntityManager;
@@ -11,6 +14,7 @@ import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +65,8 @@ public class AssignmentService implements IAssignmentService{
             throw new IllegalArgumentException("Invalid User");
 
         Optional<Assignment> optionalUser = Optional.ofNullable(assignmentRepository.findById(id));
-        Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException());
+        Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException("Assignment not found"));
+
         return assignment;
     }
 
@@ -86,12 +91,20 @@ public class AssignmentService implements IAssignmentService{
 
     @Override
     public boolean updateAssignment(UUID id, Assignment requestBody) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assignment assignment1 = assignmentRepository
                 .findById(id);
-        assignment1.setName(requestBody.getName());
-        assignment1.setPoints(requestBody.getPoints());
-        assignment1.setNum_of_attempts(requestBody.getNum_of_attempts());
-        return assignmentRepository.save(assignment1) != null ? true : false;
+        if (authentication.getPrincipal().equals(assignment1.getOwnerEmail())){
+            assignment1.setName(requestBody.getName());
+            assignment1.setPoints(requestBody.getPoints());
+            assignment1.setNum_of_attempts(requestBody.getNum_of_attempts());
+            return assignmentRepository.save(assignment1) != null ? true : false;
+        }
+        else
+            throw new CannotAccessException("Cannot access the requested Data");
+
+
+
 
     }
 

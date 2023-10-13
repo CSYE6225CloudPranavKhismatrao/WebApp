@@ -60,7 +60,7 @@ public class AssignmentController {
     }
     @PatchMapping("v1/assignments")
     public ResponseEntity<String> patchAssignment(){
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
     @GetMapping("/v1/assignments/{id}")
@@ -82,7 +82,6 @@ public class AssignmentController {
     @PutMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
                                                     @PathVariable String id){
-        try {
             JsonNode requestJson = validationService.validateJSON(requestBody, SCHEMA_PATH);
             log.info("Validated JSON String");
             UUID uuid = UUID.fromString(id);
@@ -100,11 +99,7 @@ public class AssignmentController {
             }
             log.info("Updated Assignment in Database");
             return ResponseEntity.status(204).build();
-        }
-        catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity.status(400).build();
-        }
+
     }
 
     @GetMapping("/healthz")
