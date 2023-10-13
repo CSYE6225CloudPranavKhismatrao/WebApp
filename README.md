@@ -40,10 +40,9 @@
 -  A setup.sh script is created to setup the environment (Java Maven Postgressql) for Debian VM
 -  A seperate config property file is created to store the db credentials out of the web application
 -  The project zip folder. users.csv, db.properties is scp to the /opt folder in debian
--  A start.sh Script is created to unzip and run the jar file in the project (test change)
+-  A start.sh Script is created to unzip and run the jar file in the project
 
-## Necessary Commands used and 
-
+## Necessary Commands used and required
 
 - sudo -i -u postgres
 - psql
