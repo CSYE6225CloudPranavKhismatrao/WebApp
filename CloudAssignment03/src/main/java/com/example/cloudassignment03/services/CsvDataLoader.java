@@ -5,6 +5,7 @@ import com.example.cloudassignment03.repository.AccountRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,14 @@ public class CsvDataLoader {
         this.accountRepository = accountRepository;
     }
 
+    @Value("${env.CSV_PATH:..//opt/users.csv}")
+    private String csv_path;
+
     @PostConstruct
     public void loadDataFromCsv() {
         System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
 
-        try (CSVReader csvReader = new CSVReader(new FileReader("..//opt/users.csv"))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(csv_path))) {
             String[] line;
             csvReader.readNext();
             while ((line = csvReader.readNext()) != null) {
