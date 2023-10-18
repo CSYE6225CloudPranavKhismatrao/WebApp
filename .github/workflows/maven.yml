@@ -49,6 +49,6 @@ jobs:
         run: packer fmt -check packer_tmp/aws-debian.pkr.hcl
 
       - name: Running Packer template validation
-        run: packer validate -check packer_tmp/aws-debian.pkr.hcl
+        run: packer validate  packer_tmp/aws-debian.pkr.hcl
 
 
