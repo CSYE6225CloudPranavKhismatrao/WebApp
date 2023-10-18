@@ -53,4 +53,3 @@ jobs:
         run: packer validate -check packer_tmp/aws-debian.pkr.hcl
 
 
-
