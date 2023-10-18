@@ -31,3 +31,24 @@ jobs:
         working-directory: CloudAssignment03
         run: mvn test -Dtest=HealthCheckIntegrationTest
 
+      - name: Building Jar file
+        working-directory: springdemo
+        run: mvn package -Dmaven.test.skip=true
+
+      - name: Checking AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Installing packer provisioners
+        run: packer init aws-linux2.pkr.hcl
+
+      - name: Formatting packer
+        run: packer fmt -check aws-debian.pkr.hcl
+
+      - name: Running Packer template validation
+        run: packer validate -check aws-debian.pkr.hcl
+
+
