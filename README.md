@@ -12,6 +12,8 @@
 ### Database Configuration
 - Database (PostgreSQL) is configured and instance up and running. using the following commands:
   - Start Postgres:
+  - 
+  - 
     `sudo service postgresql start`
   - See Status:
     `sudo service postgresql status`

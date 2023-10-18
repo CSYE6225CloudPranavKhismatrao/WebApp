@@ -32,7 +32,7 @@ jobs:
         run: mvn test -Dtest=HealthCheckIntegrationTest
 
       - name: Building Jar file
-        working-directory: springdemo
+        working-directory: CloudAssignment03
         run: mvn package -Dmaven.test.skip=true
 
       - name: Checking AWS credentials
