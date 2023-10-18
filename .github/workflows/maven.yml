@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Java-Build
+    name: Java-Build-on-pull
     runs-on: ubuntu-latest
 
     steps:
