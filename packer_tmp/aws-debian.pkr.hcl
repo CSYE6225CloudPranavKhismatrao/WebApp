@@ -27,6 +27,11 @@ variable "subnet_id" {
   default = "subnet-0ef821d9bbfe01892"
 }
 
+variable "instanceType" {
+  type    = string
+  default = "t2.micro"
+}
+
 # https://www.packer.io/plugins/builders/amazon/ebs
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
@@ -38,7 +43,7 @@ source "amazon-ebs" "my-ami" {
   #  ]
   #  owners = []
   ami_users     = ["956043594788"]
-  instance_type = "t2.micro"
+  instance_type = "${var.instanceType}"
   source_ami    = "${var.source_ami}"
   ssh_username  = "${var.ssh_username}"
   subnet_id     = "${var.subnet_id}"
