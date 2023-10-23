@@ -53,7 +53,7 @@ source "amazon-ebs" "my-ami" {
     device_name           = "/dev/xvda"
     volume_size           = 25
     volume_type           = "gp2"
-  }
+
 }
 
 build {
