@@ -13,8 +13,8 @@ variable "aws_region" {
 }
 
 variable "source_ami" {
-  type    = string
-  default = "ami-06db4d78cb1d3bbf9" # Debian-12
+  type = string
+  #  default = "ami-06db4d78cb1d3bbf9" # Debian-12
 }
 
 variable "ssh_username" {
@@ -32,17 +32,23 @@ variable "instanceType" {
   default = "t2.micro"
 }
 
+variable "ami_users" {
+  type = list(string)
+  #  default = ["123456789012", "987654321098"]
+}
+
+
 # https://www.packer.io/plugins/builders/amazon/ebs
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI for CSYE 6225"
-  profile         = "default"
+  profile         = "dev"
   #  ami_regions = [
   #    "us-east-1",
   #  ]
   #  owners = []
-  ami_users     = ["956043594788"]
+  ami_users     = var.ami_users
   instance_type = "${var.instanceType}"
   source_ami    = "${var.source_ami}"
   ssh_username  = "${var.ssh_username}"
@@ -68,6 +74,11 @@ build {
     source      = "../opt/users.csv"
     destination = "/tmp/users.csv"
   }
+  #
+  provisioner "file" {
+    source      = "../cloudsystemd.service"
+    destination = "/tmp/cloudsystemd.service"
+  }
 
   provisioner "shell" {
     environment_vars = [
@@ -77,10 +88,17 @@ build {
     script = "../setup.sh"
   }
 
+
   provisioner "shell" {
     inline = [
       "sudo mv /tmp/users.csv /opt/users.csv",
-      "sudo mv /tmp/CloudAssignment03-0.0.1-SNAPSHOT.jar /opt/CloudAssignment03-0.0.1-SNAPSHOT.jar"
+      "sudo mv /tmp/CloudAssignment03-0.0.1-SNAPSHOT.jar /opt/CloudAssignment03-0.0.1-SNAPSHOT.jar",
+      "sudo mv /tmp/cloudsystemd.service /etc/systemd/system/cloudsystemd.service",
+      "sudo groupadd csye6225",
+      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl start cloudsystemd",
+
     ]
   }
   #  post-processor "ami" {
