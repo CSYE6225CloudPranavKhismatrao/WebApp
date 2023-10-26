@@ -52,7 +52,7 @@ jobs:
 
       - name: Running Packer template validation
         working-directory: packer_tmp
-        run: packer validate aws-debian.pkr.hcl
+        run: packer validate --var-file="variables.auto.pkrvar.hcl" aws-debian.pkr.hcl
 
 
 
