@@ -48,4 +48,4 @@ jobs:
 
       - name: Building Packer
         working-directory: packer_tmp
-        run: packer build aws-debian.pkr.hcl
+        run: packer build --var-file="variables.auto.pkrvar.hcl" aws-debian.pkr.hcl
