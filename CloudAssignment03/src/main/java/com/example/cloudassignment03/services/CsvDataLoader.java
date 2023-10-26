@@ -22,7 +22,7 @@ public class CsvDataLoader {
         this.accountRepository = accountRepository;
     }
 
-    @Value("${env.CSV_PATH:..//opt/users.csv}")
+    @Value("${env.CSV_PATH:/opt/users.csv}")
     private String csv_path;
 
     @PostConstruct
