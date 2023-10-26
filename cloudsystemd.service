@@ -1,18 +1,19 @@
 [Unit]
 Description= Assignment-6
-ConditionPathExists=/opt/CloudAssignment03-0.0.1-SNAPSHOT.jar
+# ConditionPathExists=/opt/Assignment3-0.0.1-SNAPSHOT.jar
 Requires=cloud-init.service
-After=cloud-init.service
+After=cloud-final.service
 
 [Service]
 Type=simple
 User=csye6225
 Group=csye6225
 WorkingDirectory=/opt
-ExecStart=java -jar CloudAssignment03-0.0.1-SNAPSHOT.jar --spring.config.name=application --spring.config.location=file:application.properties
+ExecStart= java -jar CloudAssignment03-0.0.1-SNAPSHOT.jar --spring.config.name=application --spring.config.location=file:application.properties
+StandardOutput=append:/var/log/webapp.log
+StandardError=append:/var/log/webapp-error.log
 Restart=always
 
-TimeoutSec=10s
 
 [Install]
 WantedBy=cloud-init.target
