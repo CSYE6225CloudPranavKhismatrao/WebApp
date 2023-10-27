@@ -91,15 +91,15 @@ build {
 
   provisioner "shell" {
     inline = [
-      "sudo mv /tmp/users.csv /opt/users.csv",
-      "sudo mv /tmp/CloudAssignment03-0.0.1-SNAPSHOT.jar /opt/CloudAssignment03-0.0.1-SNAPSHOT.jar",
-      "sudo mv /tmp/cloudsystemd.service /etc/systemd/system/cloudsystemd.service",
       "sudo groupadd csye6225",
-      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
+      "sudo useradd -s /bin/false -g csye6225 -d /opt/webapp -m csye6225",
+      "sudo mv /tmp/cloudsystemd.service /etc/systemd/system/cloudsystemd.service",
+      "sudo mv /tmp/users.csv /opt/users.csv",
+      "sudo mv /tmp/CloudAssignment03-0.0.1-SNAPSHOT.jar /opt/webapp/CloudAssignment03-0.0.1-SNAPSHOT.jar",
+      "sudo chown csye6225:csye6225 /opt/webapp/CloudAssignment03-0.0.1-SNAPSHOT.jar",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable cloudsystemd",
       "sudo systemctl start cloudsystemd"
-
     ]
   }
   #  post-processor "ami" {

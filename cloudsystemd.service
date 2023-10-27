@@ -9,7 +9,7 @@ After=cloud-final.service
 Type=simple
 User=csye6225
 Group=csye6225
-WorkingDirectory=/opt
+WorkingDirectory=/opt/webapp
 ExecStart= java -jar CloudAssignment03-0.0.1-SNAPSHOT.jar --spring.config.name=application --spring.config.location=file:application.properties
 StandardOutput=append:/var/log/webapp.log
 StandardError=append:/var/log/webapp-error.log
