@@ -100,6 +100,7 @@ build {
       "sudo systemctl daemon-reload",
       "sudo systemctl enable cloudsystemd",
       "sudo systemctl start cloudsystemd"
+
     ]
   }
   #  post-processor "ami" {
