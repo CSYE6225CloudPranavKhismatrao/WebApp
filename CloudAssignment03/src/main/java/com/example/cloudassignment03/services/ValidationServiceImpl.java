@@ -33,7 +33,7 @@ public class ValidationServiceImpl implements ValidationService{
                 log.error("Validation Error: {}", error);
                 errorsCombined.append(error.toString()).append("\n");
             }
-            if (errors.size() > 0)
+            if (!errors.isEmpty())
                 throw new JsonFormatException("Improper json format: \n" + errorsCombined);
         }
         catch (JsonProcessingException e) {

@@ -80,6 +80,11 @@ build {
     destination = "/tmp/cloudsystemd.service"
   }
 
+  provisioner "file" {
+    source      = "../cloudwatch-config.json"
+    destination = "/tmp/cloudwatch-config.json"
+  }
+
   provisioner "shell" {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
@@ -96,11 +101,13 @@ build {
       "sudo mv /tmp/cloudsystemd.service /etc/systemd/system/cloudsystemd.service",
       "sudo mv /tmp/users.csv /opt/users.csv",
       "sudo mv /tmp/CloudAssignment03-0.0.1-SNAPSHOT.jar /opt/webapp/CloudAssignment03-0.0.1-SNAPSHOT.jar",
+      "sudo mv /tmp/cloudwatch-config.json /opt/cloudwatch-config.json",
       "sudo chown csye6225:csye6225 /opt/webapp/CloudAssignment03-0.0.1-SNAPSHOT.jar",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable cloudsystemd",
-      "sudo systemctl start cloudsystemd"
-
+      "sudo systemctl start cloudsystemd",
+      #      "sudo wget https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+      #      "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb",
     ]
   }
   #  post-processor "ami" {

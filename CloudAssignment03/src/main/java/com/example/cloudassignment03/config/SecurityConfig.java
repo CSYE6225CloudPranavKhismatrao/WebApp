@@ -1,6 +1,5 @@
 package com.example.cloudassignment03.config;
 
-import com.example.cloudassignment03.auth.BasicAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;

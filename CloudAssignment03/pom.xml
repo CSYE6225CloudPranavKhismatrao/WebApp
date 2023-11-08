@@ -21,19 +21,34 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-cloudwatch -->
         <dependency>
-            <groupId>com.intuit.karate</groupId>
-            <artifactId>karate-core</artifactId>
-            <version>1.4.1.RC4</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-cloudwatch</artifactId>
+            <version>1.12.581</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-statsd -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-statsd</artifactId>
+            <version>1.11.5</version>
         </dependency>
 
         <dependency>
-            <groupId>com.intuit.karate</groupId>
-            <artifactId>karate-junit5</artifactId>
-            <version>1.4.1.RC4</version>
+            <groupId>com.timgroup</groupId>
+            <artifactId>java-statsd-client</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.6</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
         <!-- Maven Dependency -->
         <dependency>
             <groupId>com.opencsv</groupId>
