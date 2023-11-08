@@ -1,12 +1,14 @@
 package com.example.cloudassignment03.controller;
 
+import com.example.cloudassignment03.config.CloudWatchMetricsPublisher;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.services.AssignmentService;
 import com.example.cloudassignment03.services.HealthService;
 import com.example.cloudassignment03.services.ValidationService;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.timgroup.statsd.StatsDClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +24,25 @@ import java.util.UUID;
 public class AssignmentController {
 
     private static final String SCHEMA_PATH = "static/schema.json";
-    @Autowired
-    private AssignmentService assignmentService;
-    @Autowired
-    private ValidationService validationService;
-    @Autowired
+    private final AssignmentService assignmentService;
+    private final ValidationService validationService;
     private final HealthService healthService;
-
-    public AssignmentController(HealthService healthService) {
+    private final StatsDClient client;
+    public AssignmentController(HealthService healthService, AssignmentService assignmentService, ValidationService validationService, CloudWatchMetricsPublisher cloudWatchMetricsPublisher, StatsDClient client) {
         this.healthService = healthService;
+        this.assignmentService = assignmentService;
+        this.validationService = validationService;
+        this.client = client;
     }
 
 
     @GetMapping("/v1/assignments")
     public ResponseEntity<Object> getAll(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara){
+        String path = "/v1/assignments";
+        String method = HttpMethod.GET.toString();
+        client.increment("api.calls." + method + path);
         if (reqStr != null || reqPara !=null){
+            log.info("Request Body was not found");
             return ResponseEntity.status(400).build();
         }
         List<Assignment> list = assignmentService.getAll();
@@ -45,6 +51,9 @@ public class AssignmentController {
 
     @PostMapping("/v1/assignments")
     public ResponseEntity<String> createAssignment(@RequestBody String requestStr){
+        String path = "/v1/assignments";
+        String method = HttpMethod.POST.toString();
+        client.increment("api.calls." + method + path);
         try {
             JsonNode requestJson = validationService.validateJSON(requestStr, SCHEMA_PATH);
             log.info("Validated JSON String");
@@ -60,11 +69,17 @@ public class AssignmentController {
     }
     @PatchMapping("v1/assignments")
     public ResponseEntity<String> patchAssignment(){
+        String path = "/v1/assignments";
+        String method = HttpMethod.PATCH.toString();
+        client.increment("api.calls." + method + path);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
     @GetMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> getOne(@PathVariable String id){
+        String path = "/v1/assignments/{id}";
+        String method = HttpMethod.GET.toString();
+        client.increment("api.calls." + method + "ONE" + path);
         UUID uuid = UUID.fromString(id);
         Assignment assignment = assignmentService.getOneAssignment(uuid);
 
@@ -73,6 +88,9 @@ public class AssignmentController {
 
     @DeleteMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> deleteAssignment(@PathVariable String id){
+        String path = "/v1/assignments";
+        String method = HttpMethod.DELETE.toString();
+        client.increment("api.calls." + method + path);
         UUID uuid = UUID.fromString(id);
         return assignmentService.deleteAssignment(uuid) ?
                 ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
@@ -82,6 +100,9 @@ public class AssignmentController {
     @PutMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
                                                     @PathVariable String id){
+        String path = "/v1/assignments";
+        String method = HttpMethod.PUT.toString();
+        client.increment("api.calls." + method + path);
             JsonNode requestJson = validationService.validateJSON(requestBody, SCHEMA_PATH);
             log.info("Validated JSON String");
             UUID uuid = UUID.fromString(id);
@@ -104,6 +125,9 @@ public class AssignmentController {
 
     @GetMapping("/healthz")
     public ResponseEntity<String> getHealthCheck() {
+        String path = "/healthz";
+        String method = HttpMethod.GET.toString();
+        client.increment("api.calls." + method + path);
         try {
 //           dataSource.getConnection().prepareStatement("SELECT 1").execute();
             if (healthService.checkDatabaseConnection()){

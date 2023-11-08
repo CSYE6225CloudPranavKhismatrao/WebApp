@@ -3,4 +3,4 @@ subnet_id = "subnet-0ef821d9bbfe01892"
 instanceType = "t2.micro"
 aws_region="us-east-1"
 ssh_username="admin"
-ami_users=["956043594788"]
+ami_users=["956043594788", "134908306192"]

@@ -1,0 +1,27 @@
+<configuration>
+    <!-- Include Spring Boot's default logback configuration -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- Console appender in JSON format -->
+    <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <!--    &lt;!&ndash; File Appender (for saving logs to a file) &ndash;&gt;-->
+    <!--    <appender name="jsonFile" class="ch.qos.logback.core.FileAppender">-->
+    <!--        <file>src/main/resources/webapp-json.log</file>-->
+    <!--        <append>true</append>-->
+    <!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+    <!--        </encoder>-->
+    <!--        &lt;!&ndash; Rolling policy for daily log files &ndash;&gt;-->
+    <!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--            <fileNamePattern>/var/log/webapp-json.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+    <!--        </rollingPolicy>-->
+    <!--    </appender>-->
+
+    <!-- Configure the root logger to use the JSON appender -->
+    <root level="info">
+        <appender-ref ref="jsonConsole" />
+        <!--        <appender-ref ref="jsonFile" />-->
+    </root>
+</configuration>

@@ -1,7 +1,6 @@
 package com.example.cloudassignment03.services;
 
 import com.example.cloudassignment03.auth.BasicAuthenticationManager;
-import com.example.cloudassignment03.entity.Account;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.exceptions.AssignmentNotFoundException;
 import com.example.cloudassignment03.exceptions.CannotAccessException;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,20 +56,25 @@ public class AssignmentService implements IAssignmentService{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); //to get Authentication
         assignment.setOwnerEmail(authentication.getName());
         assignmentRepository.save(assignment);
+        log.info("SAVED ASSIGNMENT TO DATABASE");
     }
 
 
     @Override
     public Assignment getOneAssignment(UUID id){
-        if (id == null)
+        if (id == null) {
+            log.warn("INVALID USER");
             throw new IllegalArgumentException("Invalid User");
+        }
 
         Optional<Assignment> optionalUser = Optional.ofNullable(assignmentRepository.findById(id));
 
         Assignment assignment = optionalUser.orElseThrow(() -> new AssignmentNotFoundException("Assignment not found"));
-        if (!assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName()))
+        if (!assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
+            log.warn("CANNOT ACCESS RESOURCE");
             throw new CannotAccessException("Cannot access requested resource");
-
+        }
+        log.info("RETRIEVED REQUESTED ASSIGNMENT");
         return assignment;
     }
 
@@ -91,8 +94,10 @@ public class AssignmentService implements IAssignmentService{
             Query query = entityManager.createQuery("delete from Assignment a WHERE a.id=:id");
             query.setParameter("id", uuid);
             query.executeUpdate();
+            log.info("SUCCESSFULLY DELETED");
             return true;
         }
+        log.warn("CANNOT ACCESS DATA");
         throw new CannotAccessException("Cannot access the requested Data");
     }
 
@@ -108,7 +113,9 @@ public class AssignmentService implements IAssignmentService{
             assignment1.setName(requestBody.getName());
             assignment1.setPoints(requestBody.getPoints());
             assignment1.setNum_of_attempts(requestBody.getNum_of_attempts());
-            return assignmentRepository.save(assignment1) != null ? true : false;
+            assignmentRepository.save(assignment1);
+            log.info("UPDATED SUCCESSFULLY");
+            return true;
         }
         else
             throw new CannotAccessException("Cannot access the requested Data");

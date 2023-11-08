@@ -5,6 +5,7 @@ import com.example.cloudassignment03.repository.AccountRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CsvDataLoader {
     private final AccountRepository accountRepository;
 
@@ -22,7 +24,7 @@ public class CsvDataLoader {
         this.accountRepository = accountRepository;
     }
 
-    @Value("${env.CSV_PATH:/opt/users.csv}")
+    @Value("${env.CSV_PATH:./opt/users.csv}")
     private String csv_path;
 
     @PostConstruct
@@ -37,6 +39,7 @@ public class CsvDataLoader {
                 String lastName = line[1];
                 String email = line[2]; // Assuming the password is in the second column
                 String password = line[3];
+                log.info("Extracted new Account details");
 
                 // Check if the user already exists
                 Optional<Account> existingUser = accountRepository.findByEmail(email);
@@ -48,15 +51,18 @@ public class CsvDataLoader {
                     newUser.setEmail(email);
                     newUser.setAccountCreated(LocalDateTime.now());
                     newUser.setAccountUpdated(LocalDateTime.now());
+                    log.info("Created new account with timestamp");
                     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     newUser.setPassword(passwordEncoder.encode(password));
-
+                    log.info("Saved Account to database");
                     accountRepository.save(newUser);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
+//            e.printStackTrace();
         } catch (CsvValidationException e) {
+            log.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
