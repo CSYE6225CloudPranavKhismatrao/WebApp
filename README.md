@@ -66,3 +66,4 @@
 - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO userdata;
 - DROP table userdata CASCADE;
 - DROP table assignmentdata CASCADE
+- DROP table userdata CASCADE;
