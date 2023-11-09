@@ -4,12 +4,11 @@
 
     <!-- File appender in JSON format -->
 
-    <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
+<!--    <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />-->
+<!--    </appender>-->
 
-    <appender name="json" class="ch.qos.logback.core.FileAppender">
-        <file>my-app.log</file>
+    <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
             <jsonFormatter
                     class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
@@ -21,7 +20,7 @@
     </appender>
 
     <!-- Logger for JSON logs -->
-    <logger name="jsonLogger" level="TRACE">
+    <logger name="jsonLogger" level="INFO">
         <appender-ref ref="json" />
     </logger>
 
@@ -38,8 +37,8 @@
     <!--    </appender>-->
 
     <!-- Configure the root logger to use the JSON appender -->
-    <root level="info">
-        <appender-ref ref="jsonConsole" />
-        <!--        <appender-ref ref="jsonFile" />-->
-    </root>
+<!--    <root level="info">-->
+<!--        <appender-ref ref="json" />-->
+<!--        &lt;!&ndash;        <appender-ref ref="jsonFile" />&ndash;&gt;-->
+<!--    </root>-->
 </configuration>
