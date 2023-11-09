@@ -21,6 +21,7 @@
 
     <!-- Logger for JSON logs -->
     <logger name="jsonLogger" level="INFO">
+
         <appender-ref ref="json" />
     </logger>
 
