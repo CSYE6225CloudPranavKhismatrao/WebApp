@@ -8,6 +8,8 @@ import com.example.cloudassignment03.services.ValidationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.timgroup.statsd.StatsDClient;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,9 @@ public class AssignmentController {
     private final ValidationService validationService;
     private final HealthService healthService;
     private final StatsDClient client;
+
+    Logger logger = LoggerFactory.getLogger("jsonLogger");
+
     public AssignmentController(HealthService healthService, AssignmentService assignmentService, ValidationService validationService, CloudWatchMetricsPublisher cloudWatchMetricsPublisher, StatsDClient client) {
         this.healthService = healthService;
         this.assignmentService = assignmentService;
@@ -42,7 +47,7 @@ public class AssignmentController {
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
         if (reqStr != null || reqPara !=null){
-            log.info("Request Body was not found");
+            logger.atError().log("Request Body or Request Parameter is not null");
             return ResponseEntity.status(400).build();
         }
         List<Assignment> list = assignmentService.getAll();
@@ -56,13 +61,12 @@ public class AssignmentController {
         client.increment("api.calls." + method + path);
         try {
             JsonNode requestJson = validationService.validateJSON(requestStr, SCHEMA_PATH);
-            log.info("Validated JSON String");
+            logger.atInfo().log("Validated JSON String");
             assignmentService.createAssignment(requestJson);
-            log.info("Created Assignment in Database");
+            logger.atInfo().log("Created Assignment in Database");
             return ResponseEntity.status(201).build();
         }
         catch (Exception e){
-            log.error(e.getMessage());
             return ResponseEntity.status(400).build();
         }
 
@@ -72,6 +76,7 @@ public class AssignmentController {
         String path = "/v1/assignments";
         String method = HttpMethod.PATCH.toString();
         client.increment("api.calls." + method + path);
+        logger.atError().log("PATCH Method not allowed");
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
@@ -82,7 +87,10 @@ public class AssignmentController {
         client.increment("api.calls." + method + "ONE" + path);
         UUID uuid = UUID.fromString(id);
         Assignment assignment = assignmentService.getOneAssignment(uuid);
-
+        if (assignment == null){
+            logger.atError().log("Assignment not found");
+            return ResponseEntity.status(404).build();
+        }
         return ResponseEntity.status(200).body(assignment);
     }
 
@@ -92,6 +100,7 @@ public class AssignmentController {
         String method = HttpMethod.DELETE.toString();
         client.increment("api.calls." + method + path);
         UUID uuid = UUID.fromString(id);
+        logger.atInfo().log("Deleted Assignment in Database");
         return assignmentService.deleteAssignment(uuid) ?
                 ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
     }
@@ -116,9 +125,10 @@ public class AssignmentController {
            assignment.setPoints(requestJson.get("points").intValue());
             assignment.setAssignmentUpdated(LocalDateTime.now());
             if (!assignmentService.updateAssignment(uuid, assignment)){
+                logger.atError().log("Assignment not found");
                 return ResponseEntity.status(404).build();
             }
-            log.info("Updated Assignment in Database");
+            logger.atInfo().log("Updated Assignment in Database");
             return ResponseEntity.status(204).build();
 
     }
@@ -129,14 +139,15 @@ public class AssignmentController {
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
         try {
-//           dataSource.getConnection().prepareStatement("SELECT 1").execute();
             if (healthService.checkDatabaseConnection()){
+                logger.atInfo().log("Database is up and running");
                 return ResponseEntity.ok()
                         .header("Cache-Control","no-cache, no-store, must-revalidate")
                         .header("Pragma", "no-cache")
                         .header("X-Content-Type-Options", "nosniff")
                         .build();
             }
+            logger.atError().log("Database is down");
             return ResponseEntity.status(503)
                     .header("Cache-Control","no-cache, no-store, must-revalidate")
                     .header("Pragma", "no-cache")
@@ -149,7 +160,5 @@ public class AssignmentController {
         }
 
     }
-
-
 
 }

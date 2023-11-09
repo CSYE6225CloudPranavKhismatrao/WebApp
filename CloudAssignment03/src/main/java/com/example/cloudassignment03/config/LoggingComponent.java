@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 
@@ -14,14 +16,14 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class LoggingComponent extends HttpFilter {
+    Logger logger = LoggerFactory.getLogger("jsonLogger");
+
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        log.info("Incoming Request: " + request.getMethod() + " " + request.getRequestURI());
-    // .addKeyValue("Incoming Request", request.getMethod())
-                        //.addKeyValue("URI", request.getRequestURI()).log("Message");
+        logger.atInfo().log("Incoming Request " + request.getMethod() + " " + request.getRequestURI() ); // info("Incoming Request: " + request.getMethod() + " " + request.getRequestURI());
+
         chain.doFilter(request, response);
-        log.info("Outgoing Response: " + response.getStatus());
-//        log.atInfo().addKeyValue("Outgoing Response", response.getStatus()).log("Message");
+        logger.atInfo().log("Outgoing Response: " + response.getStatus());
     }
 
 //    @Override
