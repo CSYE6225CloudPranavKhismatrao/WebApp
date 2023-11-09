@@ -81,12 +81,6 @@ build {
   }
 
   provisioner "file" {
-    source      = "../my-app.log"
-    destination = "/tmp/my-app.log"
-  }
-
-  provisioner "file" {
-
     source      = "../cloudwatch-config.json"
     destination = "/tmp/cloudwatch-config.json"
   }
