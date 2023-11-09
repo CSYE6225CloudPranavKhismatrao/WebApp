@@ -9,6 +9,7 @@
         "collect_list": [
           {
             "file_path": "/opt/webapp/my-app.log",
+
             "log_group_name": "csye6225",
             "log_stream_name": "webapp"
           }

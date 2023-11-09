@@ -10,6 +10,7 @@ import com.timgroup.statsd.StatsDClient;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,7 @@ public class AssignmentController {
         client.increment("api.calls." + method + path);
         if (reqStr != null || reqPara !=null){
             logger.atError().log("Request Body or Request Parameter is not null");
+
             return ResponseEntity.status(400).build();
         }
         List<Assignment> list = assignmentService.getAll();
@@ -77,6 +79,7 @@ public class AssignmentController {
         String method = HttpMethod.PATCH.toString();
         client.increment("api.calls." + method + path);
         logger.atError().log("PATCH Method not allowed");
+
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 

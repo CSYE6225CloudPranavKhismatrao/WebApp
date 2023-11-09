@@ -16,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +44,7 @@ public class BasicAuthenticationManager implements AuthenticationManager {
         if (!passwordEncoder.matches(password, user.get().getPassword())) {
             logger.atError().log("User authentication failed");
             logger.atDebug().log("Credentials Invalid");
+
             throw new BadCredentialsException("1000");
         }
 
@@ -52,6 +52,7 @@ public class BasicAuthenticationManager implements AuthenticationManager {
         List<GrantedAuthority> list = new ArrayList<>();
         list.add(authority);
         logger.atInfo().log("User authenticated Successfully");
+
         return new UsernamePasswordAuthenticationToken(username,password,list);
     }
 

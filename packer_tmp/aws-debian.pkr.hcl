@@ -86,6 +86,7 @@ build {
   }
 
   provisioner "file" {
+
     source      = "../cloudwatch-config.json"
     destination = "/tmp/cloudwatch-config.json"
   }
@@ -109,6 +110,7 @@ build {
       "sudo mv /tmp/cloudwatch-config.json /opt/cloudwatch-config.json",
       "sudo mv /tmp/my-app.log /opt/webapp/my-app.log",
       "sudo chmod 666 /opt/webapp/my-app.log",
+
       "sudo chown csye6225:csye6225 /opt/webapp/CloudAssignment03-0.0.1-SNAPSHOT.jar",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable cloudsystemd",
