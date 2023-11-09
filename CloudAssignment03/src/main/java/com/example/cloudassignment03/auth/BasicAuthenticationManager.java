@@ -3,6 +3,9 @@ package com.example.cloudassignment03.auth;
 import com.example.cloudassignment03.entity.Account;
 import com.example.cloudassignment03.repository.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,27 +27,32 @@ public class BasicAuthenticationManager implements AuthenticationManager {
     private AccountRepository accountRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    Logger logger = LoggerFactory.getLogger("jsonLogger");
+
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getPrincipal() + "";
         String password = authentication.getCredentials() + "";
-//        System.out.println("In AuthenticateManager " );
-//        System.out.println("Username " + username + " Pass " + password);
+
         Optional<Account> user =  accountRepository.findByEmail(username);
         if (user.isEmpty()) {
-            log.atError().log("No User Found");
+            logger.atError().log("User authentication failed");
+            logger.atDebug().log("User Not Found");
             throw new BadCredentialsException("1000");
         }
         if (!passwordEncoder.matches(password, user.get().getPassword())) {
-            log.atError().log("Password does not match");
+            logger.atError().log("User authentication failed");
+            logger.atDebug().log("Credentials Invalid");
+
             throw new BadCredentialsException("1000");
         }
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
         List<GrantedAuthority> list = new ArrayList<>();
         list.add(authority);
-        log.atInfo().log("USER AUTHENTICATED");
+        logger.atInfo().log("User authenticated Successfully");
+
         return new UsernamePasswordAuthenticationToken(username,password,list);
     }
 

@@ -2,10 +2,28 @@
     <!-- Include Spring Boot's default logback configuration -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-    <!-- Console appender in JSON format -->
+    <!-- File appender in JSON format -->
+
     <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
+
+    <appender name="json" class="ch.qos.logback.core.FileAppender">
+        <file>my-app.log</file>
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter
+                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>false</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+            <appendLineSeparator>true</appendLineSeparator>
+        </layout>
+    </appender>
+
+    <!-- Logger for JSON logs -->
+    <logger name="jsonLogger" level="TRACE">
+        <appender-ref ref="json" />
+    </logger>
 
     <!--    &lt;!&ndash; File Appender (for saving logs to a file) &ndash;&gt;-->
     <!--    <appender name="jsonFile" class="ch.qos.logback.core.FileAppender">-->
