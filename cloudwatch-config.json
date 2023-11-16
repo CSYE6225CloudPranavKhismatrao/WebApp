@@ -21,6 +21,7 @@
     "log_group_name": "csye6225",
     "retention_in_days": 1
   },
+
     "metrics": {
       "metrics_collected": {
         "statsd": {
