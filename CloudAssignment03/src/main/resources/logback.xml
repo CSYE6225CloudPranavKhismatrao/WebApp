@@ -41,5 +41,6 @@
 <!--    <root level="info">-->
 <!--        <appender-ref ref="jsonConsole" />-->
 <!--&lt;!&ndash;                <appender-ref ref="jsonFile" />&ndash;&gt;-->
+
 <!--    </root>-->
 </configuration>
