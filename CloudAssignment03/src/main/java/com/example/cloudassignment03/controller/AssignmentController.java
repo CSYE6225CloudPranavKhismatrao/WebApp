@@ -1,19 +1,25 @@
 package com.example.cloudassignment03.controller;
 
 import com.example.cloudassignment03.config.CloudWatchMetricsPublisher;
+import com.example.cloudassignment03.entity.Account;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.services.AssignmentService;
 import com.example.cloudassignment03.services.HealthService;
 import com.example.cloudassignment03.services.ValidationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.timgroup.statsd.StatsDClient;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.Status;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +27,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import static org.springframework.boot.actuate.health.Status.UP;
 
 @RestController
 @Slf4j
@@ -31,6 +39,14 @@ public class AssignmentController {
     private final ValidationService validationService;
     private final HealthService healthService;
     private final StatsDClient client;
+
+    @Autowired
+    private HikariDataSource hikariDataSource;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
 
     Logger logger = LoggerFactory.getLogger("jsonLogger");
 
@@ -136,32 +152,17 @@ public class AssignmentController {
 
     }
 
-    @GetMapping("/healthz")
-    public ResponseEntity<String> getHealthCheck() {
-        String path = "/healthz";
-        String method = HttpMethod.GET.toString();
-        client.increment("api.calls." + method + path);
-        try {
-            if (healthService.checkDatabaseConnection()){
-                logger.atInfo().log("Database is up and running");
-                return ResponseEntity.ok()
-                        .header("Cache-Control","no-cache, no-store, must-revalidate")
-                        .header("Pragma", "no-cache")
-                        .header("X-Content-Type-Options", "nosniff")
-                        .build();
-            }
-            logger.atError().log("Database is down");
-            return ResponseEntity.status(503)
-                    .header("Cache-Control","no-cache, no-store, must-revalidate")
-                    .header("Pragma", "no-cache")
-                    .header("X-Content-Type-Options", "nosniff")
-                    .build();
+//    @GetMapping("healthz")
+//    public ResponseEntity<String> getHealthCheck() {
+//        try {
+//            jdbcTemplate.queryForObject("SELECT 1", Integer.class);
+//            client.increment("api.healthCheck.ok");
+//            return ResponseEntity.ok().build();
+//        } catch (Exception exception) {
+//            client.increment("api.healthCheck.failed");
+//            return ResponseEntity.status(503).build();
+//        }
+//    }
 
-        } catch (Exception e) {
-            return ResponseEntity.status(503)
-                    .build();
-        }
-
-    }
 
 }
