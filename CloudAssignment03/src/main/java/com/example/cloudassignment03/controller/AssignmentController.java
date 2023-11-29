@@ -3,8 +3,13 @@ package com.example.cloudassignment03.controller;
 import com.example.cloudassignment03.config.CloudWatchMetricsPublisher;
 import com.example.cloudassignment03.entity.Account;
 import com.example.cloudassignment03.entity.Assignment;
+import com.example.cloudassignment03.entity.Submission;
+import com.example.cloudassignment03.repository.SubmissionRepository;
+import com.example.cloudassignment03.response.AssignmentResponse;
+import com.example.cloudassignment03.response.SubmissionResponse;
 import com.example.cloudassignment03.services.AssignmentService;
 import com.example.cloudassignment03.services.HealthService;
+import com.example.cloudassignment03.services.SubmissionService;
 import com.example.cloudassignment03.services.ValidationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.timgroup.statsd.StatsDClient;
@@ -26,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.boot.actuate.health.Status.UP;
@@ -35,6 +41,7 @@ import static org.springframework.boot.actuate.health.Status.UP;
 public class AssignmentController {
 
     private static final String SCHEMA_PATH = "static/schema.json";
+    private static final String SUBMISSION_SCHEMA_PATH = "static/submission-schema.json";
     private final AssignmentService assignmentService;
     private final ValidationService validationService;
     private final HealthService healthService;
@@ -45,6 +52,9 @@ public class AssignmentController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SubmissionService submissionService;
 
 
 
@@ -68,21 +78,21 @@ public class AssignmentController {
 
             return ResponseEntity.status(400).build();
         }
-        List<Assignment> list = assignmentService.getAll();
+        List<AssignmentResponse> list = assignmentService.getAll();
         return ResponseEntity.ok(list);
     }
 
     @PostMapping("/v1/assignments")
-    public ResponseEntity<String> createAssignment(@RequestBody String requestStr){
+    public ResponseEntity<AssignmentResponse> createAssignment(@RequestBody String requestStr){
         String path = "/v1/assignments";
         String method = HttpMethod.POST.toString();
         client.increment("api.calls." + method + path);
         try {
             JsonNode requestJson = validationService.validateJSON(requestStr, SCHEMA_PATH);
             logger.atInfo().log("Validated JSON String");
-            assignmentService.createAssignment(requestJson);
+            Optional<AssignmentResponse> assignment = Optional.of(assignmentService.createAssignment(requestJson));
             logger.atInfo().log("Created Assignment in Database");
-            return ResponseEntity.status(201).build();
+            return ResponseEntity.status(201).body(assignment.get());
         }
         catch (Exception e){
             return ResponseEntity.status(400).build();
@@ -105,7 +115,7 @@ public class AssignmentController {
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + "ONE" + path);
         UUID uuid = UUID.fromString(id);
-        Assignment assignment = assignmentService.getOneAssignment(uuid);
+        AssignmentResponse assignment = assignmentService.getOneAssignment(uuid);
         if (assignment == null){
             logger.atError().log("Assignment not found");
             return ResponseEntity.status(404).build();
@@ -133,22 +143,30 @@ public class AssignmentController {
         client.increment("api.calls." + method + path);
             JsonNode requestJson = validationService.validateJSON(requestBody, SCHEMA_PATH);
             log.info("Validated JSON String");
-            UUID uuid = UUID.fromString(id);
-            Assignment assignment = new Assignment();
-            assignment.setName(requestJson.get("name").textValue());
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
-//        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy", Locale.ENGLISH);
-            LocalDateTime date = LocalDateTime.parse(requestJson.get("deadline").textValue(), inputFormatter);
-//        String formattedDate = outputFormatter.format(date);
-          assignment.setDeadline(date);
-           assignment.setPoints(requestJson.get("points").intValue());
-            assignment.setAssignmentUpdated(LocalDateTime.now());
-            if (!assignmentService.updateAssignment(uuid, assignment)){
+            if (!assignmentService.updateAssignment(id, requestJson)){
                 logger.atError().log("Assignment not found");
                 return ResponseEntity.status(404).build();
             }
             logger.atInfo().log("Updated Assignment in Database");
             return ResponseEntity.status(204).build();
+
+    }
+    @PostMapping("/v1/assignments/{id}/submission")
+    public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
+                                                    @PathVariable String id) {
+//        String path = "/v1/assignments";
+//        String method = HttpMethod.PUT.toString();
+//        client.increment("api.calls." + method + path);
+        JsonNode requestJson = validationService.validateJSON(requestBody, SUBMISSION_SCHEMA_PATH);
+        log.atDebug().log("Validated JSON String" + requestJson);
+        SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson);
+        log.atDebug().log("Submitted Assignment");
+        if (submission == null){
+            logger.atError().log("Could Not Submit");
+            return ResponseEntity.status(404).build();
+        }
+        log.info("Validated JSON String");
+        return ResponseEntity.status(201).body(submission);
 
     }
 

@@ -30,6 +30,14 @@ public class GlobalExceptionHandler {
         return "{error: \"" + cannotAccessException.getMessage() + "\"}";
 
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CannotSubmitException.class)
+    @ResponseBody
+    public String handleCannotSubmitException(CannotSubmitException cannotSubmitException){
+        return "{error: \"" + cannotSubmitException.getMessage() + "\"}";
+    }
+
 //
 //    @ResponseStatus(HttpStatus.NOT_MODIFIED)
 //    @ExceptionHandler(AssignmentNotUpdated.class)

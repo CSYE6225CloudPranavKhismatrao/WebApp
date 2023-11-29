@@ -29,8 +29,8 @@ public class CsvDataLoader {
 
     @PostConstruct
     public void loadDataFromCsv() {
-        System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
-
+        log.atInfo().log("Current Working Directory: " + System.getProperty("user.dir"));
+        log.atWarn().log("CSV Path: " + csv_path);
         try (CSVReader csvReader = new CSVReader(new FileReader(csv_path))) {
             String[] line;
             csvReader.readNext();
