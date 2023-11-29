@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "assignment_id": {
+      "type": "string"
+    },
+    "submission_url": {
+      "type": "string"
+    },
+    "submission_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "submission_updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+    },
+  "required": ["submission_url"]
+
+}
+

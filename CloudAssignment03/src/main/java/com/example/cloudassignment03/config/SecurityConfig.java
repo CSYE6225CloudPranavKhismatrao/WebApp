@@ -42,7 +42,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/healthz", "healthz").permitAll())
 
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/v1/assignments","v1/assignments/*").authenticated())
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/v1/assignments","v1/assignments/*/submission","v1/assignments/*").authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();

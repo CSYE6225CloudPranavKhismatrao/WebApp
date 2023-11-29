@@ -21,7 +21,7 @@ public class HealthService {
     Logger logger = LoggerFactory.getLogger("jsonLogger");
 
     public Health checkDataSourceHealth() {
-        Query query = entityManager.createQuery("select 1 from Account");
+        Query query = entityManager.createQuery("select 1");
         if(!query.getResultList().isEmpty()) {
             logger.atInfo().log("Data Source is UP");
             return Health.status(Status.UP).build();

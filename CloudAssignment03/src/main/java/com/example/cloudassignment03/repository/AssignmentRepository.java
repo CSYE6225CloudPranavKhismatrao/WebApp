@@ -11,6 +11,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment,Long> {
 
     Assignment findById(UUID id);
 
+    void deleteById(UUID id);
+
 //    Assignment findByIdAndOwnerEmail(UUID id, String ownerEmail);
 //
 //    boolean existsById(UUID id);

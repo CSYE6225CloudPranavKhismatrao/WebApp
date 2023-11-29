@@ -1,14 +1,19 @@
 package com.example.cloudassignment03.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "Assignment")
 public class Assignment {
 
@@ -30,5 +35,7 @@ public class Assignment {
     private LocalDateTime assignmentUpdated;
     @Column
     private String ownerEmail;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "assignment")
+    private List<Submission> submissions;
 
 }
