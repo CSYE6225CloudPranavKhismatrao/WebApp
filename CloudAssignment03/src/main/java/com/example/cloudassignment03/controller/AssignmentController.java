@@ -154,7 +154,7 @@ public class AssignmentController {
     }
     @PostMapping("/v1/assignments/{id}/submission")
     public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
-                                                    @PathVariable String id, HttpServletRequest request) {
+
 //        String path = "/v1/assignments";
 //        String method = HttpMethod.PUT.toString();
 //        client.increment("api.calls." + method + path);
@@ -164,6 +164,7 @@ public class AssignmentController {
         log.atInfo().log("Content Length: " + header);
         int contentLength = Integer.parseInt(header);
         SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson, contentLength);
+
         log.atDebug().log("Submitted Assignment");
         if (submission == null){
             logger.atError().log("Could Not Submit");

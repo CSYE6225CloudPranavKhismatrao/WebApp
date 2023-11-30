@@ -5,6 +5,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.entity.SNSMessage;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.net.http.HttpHeaders;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Service
@@ -56,6 +59,7 @@ public class SubmissionService implements ISubmisionService{
 
     @Override
     public SubmissionResponse submitAssignment(UUID id, JsonNode requestBody, int contentLength) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assignment assignment1 = assignmentRepository
                 .findById(id);
@@ -95,6 +99,7 @@ public class SubmissionService implements ISubmisionService{
 //            status = "FAILURE";
 //        }
 
+
 //        BasicAWSCredentials credentials = new BasicAWSCredentials(
 //                "AKIA55GFDRQSLWJDJK7T",
 //                "URWJFg9+BXqJIgS+O4Qe/x91njRlrbXLfMb8WBFz"
@@ -120,6 +125,7 @@ public class SubmissionService implements ISubmisionService{
         SNSMessage snsMessage = new SNSMessage();
         snsMessage.setSubmissionUrl(submission.getSubmissionLink());
         snsMessage.setStatus(status ? "SUCCESS" : "FAILURE");
+
         snsMessage.setUserEmail(authentication.getName());
         snsMessage.setAssignmentId(String.valueOf(assignment1.getId()));
         ObjectMapper objectMapper = new ObjectMapper();
