@@ -159,6 +159,9 @@ public class AssignmentController {
 //        String method = HttpMethod.PUT.toString();
 //        client.increment("api.calls." + method + path);
         JsonNode requestJson = validationService.validateJSON(requestBody, SUBMISSION_SCHEMA_PATH);
+
+
+
         log.atDebug().log("Validated JSON String" + requestJson);
         String header = request.getHeader("Content-Length");
         log.atInfo().log("Content Length: " + header);
