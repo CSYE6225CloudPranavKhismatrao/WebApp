@@ -14,6 +14,7 @@ import com.example.cloudassignment03.services.ValidationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.timgroup.statsd.StatsDClient;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,13 +154,16 @@ public class AssignmentController {
     }
     @PostMapping("/v1/assignments/{id}/submission")
     public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
-                                                    @PathVariable String id) {
+                                                    @PathVariable String id, HttpServletRequest request) {
 //        String path = "/v1/assignments";
 //        String method = HttpMethod.PUT.toString();
 //        client.increment("api.calls." + method + path);
         JsonNode requestJson = validationService.validateJSON(requestBody, SUBMISSION_SCHEMA_PATH);
         log.atDebug().log("Validated JSON String" + requestJson);
-        SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson);
+        String header = request.getHeader("Content-Length");
+        log.atInfo().log("Content Length: " + header);
+        int contentLength = Integer.parseInt(header);
+        SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson, contentLength);
         log.atDebug().log("Submitted Assignment");
         if (submission == null){
             logger.atError().log("Could Not Submit");
