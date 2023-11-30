@@ -4,6 +4,8 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.example.cloudassignment03.entity.Assignment;
 import com.example.cloudassignment03.entity.SNSMessage;
@@ -17,12 +19,16 @@ import com.example.cloudassignment03.response.SubmissionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.net.http.HttpHeaders;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -52,7 +58,8 @@ public class SubmissionService implements ISubmisionService{
     }
 
     @Override
-    public SubmissionResponse submitAssignment(UUID id, JsonNode requestBody) {
+    public SubmissionResponse submitAssignment(UUID id, JsonNode requestBody, int contentLength) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assignment assignment1 = assignmentRepository
                 .findById(id);
@@ -79,6 +86,19 @@ public class SubmissionService implements ISubmisionService{
         submission.setAccountEmail(authentication.getName());
         submission = submissionRepository.save(submission);
         log.atDebug().log("Submission: {}", submission);
+        boolean status = false;
+        if (contentLength < 1){
+            status = false;
+        }
+        else {
+            status = true;
+        }
+
+
+//        if (header. > 0){
+//            status = "FAILURE";
+//        }
+
 
 //        BasicAWSCredentials credentials = new BasicAWSCredentials(
 //                "AKIA55GFDRQSLWJDJK7T",
@@ -87,24 +107,25 @@ public class SubmissionService implements ISubmisionService{
 //============================================ SNS CODE ==============================================================
         Regions regions = Regions.US_EAST_1;
 
-        val snsClient = AmazonSNSClient.builder()
-                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
-                    @Override
-                    public void refresh() {
-
-                    }
-                    @Override
-                    public com.amazonaws.auth.AWSCredentials getCredentials() {
-                        return new BasicAWSCredentials(
-                                AWS_ACCESS_KEY_ID,
-                                AWS_SECRET_ACCESS_KEY
-                        );
-                    }
-                }).build();
+        val snsClient = AmazonSNSClientBuilder.defaultClient();
+//                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
+//                    @Override
+//                    public void refresh() {
+//
+//                    }
+//                    @Override
+//                    public com.amazonaws.auth.AWSCredentials getCredentials() {
+//                        return new BasicAWSCredentials(
+//                                AWS_ACCESS_KEY_ID,
+//                                AWS_SECRET_ACCESS_KEY
+//                        );
+//                    }
+//                }).build();
         log.atDebug().log("SNS Client: {}", snsClient);
         SNSMessage snsMessage = new SNSMessage();
         snsMessage.setSubmissionUrl(submission.getSubmissionLink());
-        snsMessage.setStatus("SUCCESS");
+        snsMessage.setStatus(status ? "SUCCESS" : "FAILURE");
+
         snsMessage.setUserEmail(authentication.getName());
         snsMessage.setAssignmentId(String.valueOf(assignment1.getId()));
         ObjectMapper objectMapper = new ObjectMapper();
