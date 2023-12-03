@@ -81,8 +81,7 @@ jobs:
           aws ec2 create-launch-template-version \
             --launch-template-id $EC2_LAUNCH_TEMPLATE \
             --source-version $EC2_LAUNCH_TEMPLATE \
-            --launch-template-data "{\"ImageId\":\"$AMI_ID\"} \
-            -- source-version $EC2_LAUNCH_TEMPLATE"
+            --launch-template-data "{\"ImageId\":\"$AMI_ID\"}"
       
       - name: Refresh Instances
         run : |
