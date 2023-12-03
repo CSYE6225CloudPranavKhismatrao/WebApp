@@ -88,9 +88,22 @@ jobs:
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name $EC2_AUTOSCALING_GROUP
           
-      - name: Wait for instance refresh to complete
+      - name: wait on instance refresh completion
         run: |
-          aws autoscaling wait instance-refresh-complete \
-            --auto-scaling-group-name $EC2_AUTOSCALING_GROUP
+          asg_name="<your-auto-scaling-group-name>"
+          while true; do
+              refresh_status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name ${{ env.EC2_AUTOSCALING_GROUP }} --query 'InstanceRefreshes[0].Status' --output text)
+          
+              if [ "$refresh_status" == "Successful" ]; then
+                  echo "Instance refresh completed successfully."
+                  break
+              elif [ "$refresh_status" == "Failed" ]; then
+                  echo "Instance refresh failed."
+                  exit 1
+              else
+                  echo "Instance refresh in progress..."
+                  sleep 30
+              fi
+          done
 
           
