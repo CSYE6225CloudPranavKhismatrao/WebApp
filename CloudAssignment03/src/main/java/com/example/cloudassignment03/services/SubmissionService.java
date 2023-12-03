@@ -83,14 +83,7 @@ public class SubmissionService implements ISubmisionService{
         submission = submissionRepository.save(submission);
         log.atDebug().log("Submission: {}", submission);
         boolean status = false;
-        if (contentLength < 1){
-            status = false;
-        }
-        else {
-            status = true;
-        }
-
-
+        status = contentLength >= 1;
 //        if (header. > 0){
 //            status = "FAILURE";
 //        }
