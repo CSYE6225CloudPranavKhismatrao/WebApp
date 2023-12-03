@@ -49,3 +49,49 @@ jobs:
       - name: Building Packer
         working-directory: packer_tmp
         run: packer build --var-file="variables.auto.pkrvar.hcl" aws-debian.pkr.hcl
+
+  refresh-instances:
+    name: Refreshing Instances
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      EC2_LAUNCH_TEMPLATE: ${{ vars.EC2_LAUNCH_TEMPLATE }}
+      EC2_AUTOSCALING_GROUP: ${{ vars.EC2_AUTOSCALING_GROUP }}
+    steps:
+      - name: Checking AWS Demo credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: get the latest AMI id
+        run: | 
+          AMI_ID=$(aws ec2 describe-images \
+            --filters "Name=name,Values=csye6225*" \
+            --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
+            --output text)
+            echo "AMI_ID=$AMI_ID" >> $GITHUB_ENV
+      - name: print env variables
+        run: |
+            echo "EC2_LAUNCH_TEMPLATE: $EC2_LAUNCH_TEMPLATE"
+            echo "EC2_AUTOSCALING_GROUP: $EC2_AUTOSCALING_GROUP"
+            echo "AMI_ID: $AMI_ID"
+      - name: Create new launch template version
+        run: |
+          aws ec2 create-launch-template-version \
+            --launch-template-id $EC2_LAUNCH_TEMPLATE \
+            --source-version $EC2_LAUNCH_TEMPLATE \
+            --launch-template-data "{\"ImageId\":\"$AMI_ID\"} \
+            -- source-version $EC2_LAUNCH_TEMPLATE \"
+      
+      - name: Refresh Instances
+        run : |
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name $EC2_AUTOSCALING_GROUP
+          
+      - name: Wait for instance refresh to complete
+        run: |
+          aws autoscaling wait instance-refresh-complete \
+            --auto-scaling-group-name $EC2_AUTOSCALING_GROUP
+
+          
