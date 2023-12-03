@@ -61,8 +61,8 @@ jobs:
       - name: Checking AWS Demo credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_DEMO_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEMO_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: get the latest AMI id
         run: | 
@@ -80,7 +80,7 @@ jobs:
         run: |
           aws ec2 create-launch-template-version \
             --launch-template-id $EC2_LAUNCH_TEMPLATE \
-            --source-version $EC2_LAUNCH_TEMPLATE \
+            --source-version 1 \
             --launch-template-data "{\"ImageId\":\"$AMI_ID\"}"
       
       - name: Refresh Instances
