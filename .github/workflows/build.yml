@@ -82,7 +82,7 @@ jobs:
             --launch-template-id $EC2_LAUNCH_TEMPLATE \
             --source-version $EC2_LAUNCH_TEMPLATE \
             --launch-template-data "{\"ImageId\":\"$AMI_ID\"} \
-            -- source-version $EC2_LAUNCH_TEMPLATE \"
+            -- source-version $EC2_LAUNCH_TEMPLATE"
       
       - name: Refresh Instances
         run : |
