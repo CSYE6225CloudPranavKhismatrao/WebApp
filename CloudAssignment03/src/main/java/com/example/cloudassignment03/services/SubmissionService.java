@@ -84,31 +84,12 @@ public class SubmissionService implements ISubmisionService{
         log.atDebug().log("Submission: {}", submission);
         boolean status = false;
         status = contentLength >= 1;
-//        if (header. > 0){
-//            status = "FAILURE";
-//        }
 
-//        BasicAWSCredentials credentials = new BasicAWSCredentials(
-//                "AKIA55GFDRQSLWJDJK7T",
-//                "URWJFg9+BXqJIgS+O4Qe/x91njRlrbXLfMb8WBFz"
-//        );
 //============================================ SNS CODE ==============================================================
         Regions regions = Regions.US_EAST_1;
 
         val snsClient = AmazonSNSClientBuilder.defaultClient();
-//                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
-//                    @Override
-//                    public void refresh() {
-//
-//                    }
-//                    @Override
-//                    public com.amazonaws.auth.AWSCredentials getCredentials() {
-//                        return new BasicAWSCredentials(
-//                                AWS_ACCESS_KEY_ID,
-//                                AWS_SECRET_ACCESS_KEY
-//                        );
-//                    }
-//                }).build();
+
         log.atDebug().log("SNS Client: {}", snsClient);
         SNSMessage snsMessage = new SNSMessage();
         snsMessage.setSubmissionUrl(submission.getSubmissionLink());
