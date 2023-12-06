@@ -69,7 +69,7 @@ public class AssignmentController {
     }
 
 
-    @GetMapping("/v1/assignments")
+    @GetMapping("/v3/assignments")
     public ResponseEntity<Object> getAll(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara){
         String path = "/v1/assignments";
         String method = HttpMethod.GET.toString();
@@ -83,7 +83,7 @@ public class AssignmentController {
         return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/v1/assignments")
+    @PostMapping("/v3/assignments")
     public ResponseEntity<AssignmentResponse> createAssignment(@RequestBody String requestStr){
         String path = "/v1/assignments";
         String method = HttpMethod.POST.toString();
@@ -100,7 +100,7 @@ public class AssignmentController {
         }
 
     }
-    @PatchMapping("v1/assignments")
+    @PatchMapping("/v3/assignments")
     public ResponseEntity<String> patchAssignment(){
         String path = "/v1/assignments";
         String method = HttpMethod.PATCH.toString();
@@ -110,7 +110,7 @@ public class AssignmentController {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
-    @GetMapping("/v1/assignments/{id}")
+    @GetMapping("/v3/assignments/{id}")
     public ResponseEntity<Object> getOne(@PathVariable String id){
         String path = "/v1/assignments/{id}";
         String method = HttpMethod.GET.toString();
@@ -124,7 +124,7 @@ public class AssignmentController {
         return ResponseEntity.status(200).body(assignment);
     }
 
-    @DeleteMapping("/v1/assignments/{id}")
+    @DeleteMapping("/v3/assignments/{id}")
     public ResponseEntity<Object> deleteAssignment(@PathVariable String id){
         String path = "/v1/assignments";
         String method = HttpMethod.DELETE.toString();
@@ -136,7 +136,7 @@ public class AssignmentController {
     }
 
 
-    @PutMapping("/v1/assignments/{id}")
+    @PutMapping("/v3/assignments/{id}")
     public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
                                                     @PathVariable String id){
         String path = "/v1/assignments";
@@ -152,7 +152,7 @@ public class AssignmentController {
             return ResponseEntity.status(204).build();
 
     }
-    @PostMapping("/v1/assignments/{id}/submission")
+    @PostMapping("/v3/assignments/{id}/submission")
     public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
                                                     @PathVariable String id, HttpServletRequest request) {
 //        String path = "/v1/assignments";
