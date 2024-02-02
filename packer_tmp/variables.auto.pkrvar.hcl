@@ -1,6 +1,6 @@
-source_ami = "ami-06db4d78cb1d3bbf9"
-subnet_id = "subnet-0ef821d9bbfe01892"
+source_ami = ""// The source AMI to use for the new AMI
+subnet_id = ""// The subnet to launch the instance in
 instanceType = "t2.micro"
-aws_region="us-east-1"
+aws_region= "us-east-1"
 ssh_username="admin"
-ami_users=["956043594788", "134908306192"]
+ami_users= []// The AWS account ID to share the AMI with
