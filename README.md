@@ -31,6 +31,8 @@ User submits an assessment via the the POST method to /v1/assignments/{id}/submi
 
 3. A Lambda function is triggered when a message is published to a specific topic. The function then parses the JSON payload, executing the following tasks: fetching the submission ZIP from the user-specified endpoint, transferring the ZIP to a GCP Cloud Storage bucket, generating a new entry for the submission in a DynamoDB table, and utilizing SMTP to send an email to the user, providing information on the submission's status and storage details.
 
+4. 
+
 AWS Components:
 
 
